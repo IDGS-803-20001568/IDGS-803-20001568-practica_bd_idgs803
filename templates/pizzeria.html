@@ -1,0 +1,50 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<h3>Pizzería</h3>
+{% from "_macros.html" import render_field %}
+
+<div class="container">
+    <form name="pedido" action="/procesar_pedido" id="pedido" method="post">
+        <div class="row control-group">
+            <div class="form-group col-xs-12 float-label-form-group controls">
+                {{ render_field(form.nombre_completo, class="form-control", placeholder="Nombre Completo") }}
+            </div>
+        </div>
+        <div class="row control-group">
+            <div class="form-group col-xs-12 float-label-form-group controls">
+                {{ render_field(form.direccion, class="form-control", placeholder="Dirección") }}
+            </div>
+        </div>
+        <div class="row control-group">
+            <div class="form-group col-xs-12 float-label-form-group controls">
+                {{ render_field(form.telefono, class="form-control", placeholder="Teléfono") }}
+            </div>
+        </div>
+        <div class="row control-group">
+            <div class="form-group col-xs-12 float-label-form-group controls">
+                {{ render_field(form.fecha_compra, class="form-control", placeholder="Fecha de Compra") }}
+            </div>
+        </div>
+        <div class="row control-group">
+            <div class="form-group col-xs-12 float-label-form-group controls">
+                {{ render_field(form.num_pizzas, class="form-control", placeholder="Número de Pizzas") }}
+            </div>
+        </div>
+        <div class="row control-group">
+            <div class="form-group col-xs-12 float-label-form-group controls">
+                {{ render_field(form.tamaPizza, class="form-control") }}
+            </div>
+        </div>
+        <div class="row control-group">
+            <div class="form-group col-xs-12 float-label-form-group controls">
+                {{ render_field(form.ingredientesPizza, class="form-control") }}
+            </div>
+        </div>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <input type="submit" class="btn btn-primary" id="agregar" name="agregar" value="Agregar" />
+        <input type="reset" class="btn btn-secondary" id="quitar" name="quitar" value="Quitar" />
+    </form>
+</div>
+
+{% endblock %}
