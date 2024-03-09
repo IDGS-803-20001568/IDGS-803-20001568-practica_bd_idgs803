@@ -26,47 +26,35 @@ class EmpleadosForm(Form):
     ])
 
 
-
-
+from wtforms import DateField
 
 class PizzeriaForm(Form):
-    nombre_completo = StringField('Nombre Completo', [
-        validators.DataRequired(message='El campo es requerido'),
-        validators.Length(min=4, max=50, message='Ingresa un nombre válido')
+    id = IntegerField('id')
+    nombre = StringField('nombre', [
+        validators.DataRequired(message='el campo es requerido')
     ])
-    direccion = StringField('Dirección', [
-        validators.DataRequired(message='El campo es requerido'),
-        validators.Length(min=4, max=100, message='Ingresa una dirección válida')
+    direccion = StringField('direccion', [
+        validators.DataRequired(message='el campo es requerido')
     ])
-    telefono = StringField('Teléfono', [
-        validators.DataRequired(message='El campo es requerido'),
-        validators.Length(min=7, max=15, message='Ingresa un teléfono válido')
+    telefono = StringField('telefono', [
+        validators.DataRequired(message='el campo es requerido')
     ])
-    fecha_compra = StringField('Fecha de compra (dd-mm-yyyy)', [
-        validators.DataRequired(message='El campo es requerido'),
-        validators.Regexp(r'^\d{2}-\d{2}-\d{4}$', message='Ingresa una fecha válida en formato dd-mm-yyyy')
+    numPizzas = IntegerField('Número Pizzas', [
+        validators.DataRequired(message='el campo es requerido')
     ])
-    
-    num_pizzas = IntegerField('Número de Pizzas', [
-        validators.DataRequired(message='El campo es requerido'),
-        validators.NumberRange(min=1, message='Ingresa al menos una pizza')
-    ])
-    
-    tamaPizza = RadioField('Tamaño de la Pizza', 
-       choices=[
-            ('Chica', 'Chica - $40'),
-            ('Mediana', 'Mediana - $80'),
-            ('Grande', 'Grande - $120')
-            ], 
-        validators=[validators.InputRequired(message='Selecciona un tamaño de pizza')])
-    
-    ingredientesPizza = RadioField('Ingredientes de la Pizza', 
-       choices=[
-            ('Jamon', 'Jamón - $10'),
-            ('Piña', 'Piña - $10'),
-            ('Champiñones', 'Champiñones - $20')
-            ], 
-        validators=[validators.InputRequired(message='Selecciona al menos un ingrediente')])
 
+    tamaPizza = RadioField('Tamaño Pizza', 
+       choices=[
+            ('40','Chica $40'),
+            ('80','Mediana $80'),
+            ('120','Grande $120')
+            ])
+    ingredientesPizza = RadioField('Ingredientes Pizza', 
+       choices=[
+            ('10','Jamon $10'),
+            ('10','Piña $10'),
+            ('10','Champiñones $120')
+            ])
 
+    fecha_compra = DateField('Fecha de Compra', format='%Y-%m-%d')
 

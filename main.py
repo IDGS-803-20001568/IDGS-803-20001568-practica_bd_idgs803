@@ -91,12 +91,36 @@ def modificar():
 
 
 
-@app.route("/pizzeria", methods=["GET"])
+@app.route("/pizzeria", methods=["GET", "POST"])
 def mostrar_pizzeria():
-    formulario_pizzeria = PizzeriaForm()
+    formulario_pizzeria = PizzeriaForm(request.form)
+    if request.method == "POST" and formulario_pizzeria.validate():
+        # Captura de datos del formulario
+        nombre = formulario_pizzeria.nombre.data
+        direccion = formulario_pizzeria.direccion.data
+        telefono = formulario_pizzeria.telefono.data
+        fecha_compra = datetime.datetime.now()  # Fecha actual
+
+        # Procesamiento del pedido
+        # Agregar pizza al pedido
+        pedido = {
+            "nombre": nombre,
+            "direccion": direccion,
+            "telefono": telefono,
+            "fecha_compra": fecha_compra,
+            "tamaño_pizza": formulario_pizzeria.tamaPizza.data,
+            "ingredientes_pizza": formulario_pizzeria.ingredientesPizza.data,
+            "num_pizzas": formulario_pizzeria.numPizzas.data,
+            # Aquí deberías calcular el subtotal de la pizza
+            # y agregarlo al pedido
+        }
+
+        # Aquí deberías agregar el pedido a una lista de pedidos o a la base de datos
+
+        # Redireccionar a la misma página después de procesar el pedido
+        return redirect("/pizzeria")
+
     return render_template("pizzeria.html", form=formulario_pizzeria)
-
-
 
 
 

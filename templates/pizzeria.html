@@ -8,7 +8,7 @@
     <form name="pedido" action="/procesar_pedido" id="pedido" method="post">
         <div class="row control-group">
             <div class="form-group col-xs-12 float-label-form-group controls">
-                {{ render_field(form.nombre_completo, class="form-control", placeholder="Nombre Completo") }}
+                {{ render_field(form.nombre, class="form-control", placeholder="Nombre") }}
             </div>
         </div>
         <div class="row control-group">
@@ -28,7 +28,7 @@
         </div>
         <div class="row control-group">
             <div class="form-group col-xs-12 float-label-form-group controls">
-                {{ render_field(form.num_pizzas, class="form-control", placeholder="Número de Pizzas") }}
+                {{ render_field(form.numPizzas, class="form-control", placeholder="Número de Pizzas") }}
             </div>
         </div>
         <div class="row control-group">
