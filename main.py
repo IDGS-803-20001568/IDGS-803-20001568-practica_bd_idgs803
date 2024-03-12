@@ -41,6 +41,8 @@ def ABC_Completo():
     empleado = Empleados.query.all()
     return render_template("ABC_Completo.html",empleado=empleado)
 
+
+
 @app.route("/eliminar",methods=["GET","POST"])
 def eliminar():
     empleados_form=forms.EmpleadosForm(request.form)
@@ -60,6 +62,8 @@ def eliminar():
         db.session.commit()
         return redirect('ABC_Completo')
     return render_template("eliminar.html",form=empleados_form)
+
+
 
 @app.route("/modificar",methods=["GET","POST"])
 def modificar():
@@ -88,21 +92,17 @@ def modificar():
 
 
 
-
-
-
 @app.route("/pizzeria", methods=["GET", "POST"])
 def mostrar_pizzeria():
     formulario_pizzeria = PizzeriaForm(request.form)
     if request.method == "POST" and formulario_pizzeria.validate():
-        # Captura de datos del formulario
+      
         nombre = formulario_pizzeria.nombre.data
         direccion = formulario_pizzeria.direccion.data
         telefono = formulario_pizzeria.telefono.data
-        fecha_compra = datetime.datetime.now()  # Fecha actual
+        fecha_compra = datetime.datetime.now()  
 
-        # Procesamiento del pedido
-        # Agregar pizza al pedido
+       
         pedido = {
             "nombre": nombre,
             "direccion": direccion,
@@ -111,17 +111,27 @@ def mostrar_pizzeria():
             "tamaño_pizza": formulario_pizzeria.tamaPizza.data,
             "ingredientes_pizza": formulario_pizzeria.ingredientesPizza.data,
             "num_pizzas": formulario_pizzeria.numPizzas.data,
-            # Aquí deberías calcular el subtotal de la pizza
-            # y agregarlo al pedido
+          
         }
 
-        # Aquí deberías agregar el pedido a una lista de pedidos o a la base de datos
-
-        # Redireccionar a la misma página después de procesar el pedido
+        
         return redirect("/pizzeria")
 
     return render_template("pizzeria.html", form=formulario_pizzeria)
 
+@app.route("/finalizar_pedido", methods=["POST"])
+def finalizar_pedido():
+    data = request.json
+    nombre = data.get('nombre')
+    direccion = data.get('direccion')
+    telefono = data.get('telefono')
+    tamaño_pizza = data.get('tamaño_pizza')
+    ingredientes_pizza = data.get('ingredientes_pizza')
+    num_pizzas = data.get('num_pizzas')
+
+   
+
+    return jsonify({'message': 'Pedido finalizado correctamente'}), 200
 
 
 
