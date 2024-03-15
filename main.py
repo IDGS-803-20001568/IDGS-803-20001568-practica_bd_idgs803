@@ -113,6 +113,7 @@ def pizzeria():
     global nombreCliente
     global direccionCliente
     global telefonoCliente
+    
 
     pizzeria_form=forms.PizzeriaForm(request.form)
     formFecha = forms.ConsultaPedidosForm(request.form)
@@ -120,9 +121,24 @@ def pizzeria():
 
 
     if request.method == 'POST' and pizzeria_form.validate():
+        ingteJamon=pizzeria_form.ingteJamon.data
+        ingtePiña=pizzeria_form.ingtePiña.data
+        ingteChampiñones=pizzeria_form.ingteChampiñones.data
+        costoIngredientes = 0
+        lstIngresientes = ''
+        if ingteJamon:
+            costoIngredientes += 10
+            lstIngresientes += '1,'
+        if ingtePiña:
+            costoIngredientes += 10
+            lstIngresientes += '2,'
+        if ingteChampiñones:
+            costoIngredientes += 10
+            lstIngresientes+='3,'
+            
         costoPizza = int(pizzeria_form.tamaPizza.data)
         totalPizza = int(pizzeria_form.numPizzas.data)
-        subtotalPizza = str( (costoPizza+10)*totalPizza )
+        subtotalPizza = str( (costoPizza+costoIngredientes)*totalPizza )
         totalPizza = "0"
         numVenta = db.session.query(db.func.max(PedidosPizza.numeroVenta)).scalar()
         if numVenta is None:
@@ -154,7 +170,7 @@ def pizzeria():
             direccion=pizzeria_form.direccion.data,
             telefono=pizzeria_form.telefono.data,
             tamaPizza=pizzeria_form.tamaPizza.data,
-            ingredientesPizza= pizzeria_form.ingredientesPizza.data,
+            ingredientesPizza= lstIngresientes,
             numPizza=pizzeria_form.numPizzas.data,
             subtotal=subtotalPizza,
             total=totalPizza,
@@ -166,9 +182,12 @@ def pizzeria():
         db.session.commit()
         pedidosPiza = PedidosPizza.query.filter_by(estatus=1).all()
         for pedido in pedidosPiza:
-            pedido.ingredientesPizza = ingredientesDiccionario[pedido.ingredientesPizza]
-            pedido.tamaPizza = tamañoDiccionario[pedido.tamaPizza]
-
+            if pedido.ingredientesPizza:
+                ingredientes = pedido.ingredientesPizza.split(',')  
+                ingredientes_texto = ', '.join([ingredientesDiccionario.get(ingrediente, '') for ingrediente in ingredientes])
+                pedido.ingredientesPizza = ingredientes_texto
+            pedido.tamaPizza = tamañoDiccionario.get(pedido.tamaPizza,'')
+            
         return render_template("pizzeria.html",pedidos=pedidosPiza,form=pizzeria_form, formF=formFecha)
         
     fecha_seleccionada = formFecha.fecha_seleccionada.data
@@ -177,9 +196,12 @@ def pizzeria():
     ventasFecha = db.session.query(VentasPizzas.nombre, db.func.sum(VentasPizzas.total).label('total')).filter(VentasPizzas.create_date == fecha_seleccionada).group_by(VentasPizzas.nombre).all()
     print(ventasFecha)   
     for pedido in pedidosPiza:
-        pedido.ingredientesPizza = ingredientesDiccionario[pedido.ingredientesPizza]
-        pedido.tamaPizza = tamañoDiccionario[pedido.tamaPizza] 
-
+            if pedido.ingredientesPizza:
+                ingredientes = pedido.ingredientesPizza.split(',')  
+                ingredientes_texto = ', '.join([ingredientesDiccionario.get(ingrediente, '') for ingrediente in ingredientes])
+                pedido.ingredientesPizza = ingredientes_texto
+            pedido.tamaPizza = tamañoDiccionario.get(pedido.tamaPizza,'')
+            
     return render_template("pizzeria.html",pedidos=pedidosPiza,form=pizzeria_form,formF=formFecha,ventasFecha=ventasFecha)
 
 @app.route("/modificarPedido",methods=["GET","POST"])
@@ -194,9 +216,31 @@ def modificarPedido():
         pizzeria_form.telefono.data=pedidoPizza.telefono 
         pizzeria_form.fecha.data=pedidoPizza.create_date
         pizzeria_form.tamaPizza.data=pedidoPizza.tamaPizza
-        pizzeria_form.ingredientesPizza.data=pedidoPizza.ingredientesPizza
+        # pizzeria_form.ingredientesPizza.data=pedidoPizza.ingredientesPizza
         pizzeria_form.numPizzas.data=pedidoPizza.numPizza
+        ingredientes = pedidoPizza.ingredientesPizza.split(',')
+        for ingrediente in ingredientes:
+            if ingrediente == '1':
+                pizzeria_form.ingteJamon.data = True
+            elif ingrediente == '2':
+                pizzeria_form.ingtePiña.data = True
+            elif ingrediente == '3':
+                pizzeria_form.ingteChampiñones.data=True
     if request.method == 'POST':
+        ingteJamon=pizzeria_form.ingteJamon.data
+        ingtePiña=pizzeria_form.ingtePiña.data
+        ingteChampiñones=pizzeria_form.ingteChampiñones.data
+        costoIngredientes = 0
+        lstIngresientes = ''
+        if ingteJamon:
+            costoIngredientes += 10
+            lstIngresientes += '1,'
+        if ingtePiña:
+            costoIngredientes += 10
+            lstIngresientes += '2,'
+        if ingteChampiñones:
+            costoIngredientes += 10
+            lstIngresientes+='3,'
         id=pizzeria_form.id.data
         pedidoPizza1= db.session.query(PedidosPizza).filter(PedidosPizza.id==id).first()
         pedidoPizza1.nombre=pizzeria_form.nombre.data
@@ -204,11 +248,11 @@ def modificarPedido():
         pedidoPizza1.telefono=pizzeria_form.telefono.data
         pedidoPizza1.create_date=pizzeria_form.fecha.data
         pedidoPizza1.tamaPizza =pizzeria_form.tamaPizza.data
-        pedidoPizza1.ingredientesPizza=pizzeria_form.ingredientesPizza.data
+        pedidoPizza1.ingredientesPizza=lstIngresientes
         pedidoPizza1.numPizza=pizzeria_form.numPizzas.data
         costoPizza = int(pizzeria_form.tamaPizza.data)
         totalPizza = int(pizzeria_form.numPizzas.data)
-        subtotalPizza = str( (costoPizza+10)*totalPizza )
+        subtotalPizza = str( (costoPizza+costoIngredientes)*totalPizza )
         totalPizza = "0"
 
         pedidoPizza1.subtotal = subtotalPizza
@@ -235,18 +279,18 @@ def terminarPedido():
     if request.method == 'POST':
         global mismaVenta
         max_id = db.session.query(db.func.max(PedidosPizza.numeroVenta)).scalar()
-        print("------------------------------ ID máximo: {}".format(max_id))
         suma_subtotal = db.session.query(db.func.sum(PedidosPizza.subtotal)).filter(PedidosPizza.numeroVenta == max_id).scalar()
-        print("------------------------------ Suma de subtotal para idVenta {}: {}".format(max_id, suma_subtotal))
         mismaVenta = False
    
         nombreCliente = db.session.query(PedidosPizza.nombre).filter(PedidosPizza.numeroVenta == max_id).first()[0]
+        fechaVenta = db.session.query(PedidosPizza.create_date).filter(PedidosPizza.numeroVenta == max_id).first()[0]
 
  
         nuevaVenta = VentasPizzas(
             nombre=nombreCliente,
             numeroVenta=max_id,
-            total=suma_subtotal
+            total=suma_subtotal,
+            create_date=fechaVenta
         )
         db.session.add(nuevaVenta)
         db.session.commit()
