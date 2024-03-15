@@ -216,7 +216,6 @@ def modificarPedido():
         pizzeria_form.telefono.data=pedidoPizza.telefono 
         pizzeria_form.fecha.data=pedidoPizza.create_date
         pizzeria_form.tamaPizza.data=pedidoPizza.tamaPizza
-        # pizzeria_form.ingredientesPizza.data=pedidoPizza.ingredientesPizza
         pizzeria_form.numPizzas.data=pedidoPizza.numPizza
         ingredientes = pedidoPizza.ingredientesPizza.split(',')
         for ingrediente in ingredientes:

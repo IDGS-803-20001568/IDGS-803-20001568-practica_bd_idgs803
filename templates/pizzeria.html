@@ -190,7 +190,6 @@
         var filas = document.querySelectorAll("table tbody tr");
         var total = 0;
 
-        // Sumar los valores de la columna Subtotal (penúltima columna)
         for (var i = 0; i < filas.length; i++) {
             var penultimaCelda = filas[i].querySelector("td:nth-last-child(2)");
             var subtotal = parseFloat(penultimaCelda.innerText);

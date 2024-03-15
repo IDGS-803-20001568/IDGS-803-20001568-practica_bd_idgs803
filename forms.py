@@ -63,15 +63,7 @@ class PizzeriaForm(Form):
             ('80','Mediana $80.00'),
             ('120','Grande $120.00')
             ])
-    
-    
-    # ingredientesPizza = RadioField('Ingredientes', 
-    #    choices=[
-    #         ('1','Jamon $10.00'),
-    #         ('2','Piña $10.00'),
-    #         ('3','Champiñones $10.00')
-    #         ])
-    
+
     ingteJamon = BooleanField('Jamon $10', default=False)
     ingtePiña = BooleanField('Piña $10', default=False)
     ingteChampiñones = BooleanField('Champiñones $10',default=False)
